@@ -44,5 +44,3 @@ export const convertToWords = (num) => {
 
   return result + " Only";
 };
-
-// import { jsPDF } from "jspdf";

@@ -188,7 +188,7 @@ const Create = () => {
                       </div>
                     </td>
                     <td>
-                      <div>
+                      <div className="values">
                         <p>{(totalAmount * 0.0625).toFixed(2)}</p>
                         <p>{(totalItems * 5).toFixed(2)}</p>
                         <input
