@@ -1,51 +1,48 @@
-const numbersToWords = {
-    0: "zero",
-    1: "one",
-    2: "two",
-    3: "three",
-    4: "four",
-    5: "five",
-    6: "six",
-    7: "seven",
-    8: "eight",
-    9: "nine",
-    10: "ten",
-    11: "eleven",
-    12: "twelve",
-    13: "thirteen",
-    14: "fourteen",
-    15: "fifteen",
-    16: "sixteen",
-    17: "seventeen",
-    18: "eighteen",
-    19: "nineteen",
-    20: "twenty",
-    30: "thirty",
-    40: "forty",
-    50: "fifty",
-    60: "sixty",
-    70: "seventy",
-    80: "eighty",
-    90: "ninety",
-  };
+// Function to convert a number to words (Indian system)
+export const convertToWords = (num) => {
+  const units = [
+    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+  ];
 
-  function convertNumberToWords(number) {
-    if (number in numbersToWords) return numbersToWords[number];
-    let words = "";
-    if (number >= 100) {
-      words += convertNumberToWords(Math.floor(number / 100)) + " hundred";
-      number %= 100;
+  const tens = [
+    "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+  ];
+
+  const thousands = ["", "Thousand", "Lakh", "Crore"];
+
+  if (num === 0) return "Zero";
+
+  // Separate the integer and fractional part
+  const [integerPart] = num.toString().split(".");
+
+  let result = "";
+  let i = 0;
+
+  // Convert the integer part into words
+  let n = parseInt(integerPart);
+  while (n > 0) {
+    if (n % 100 < 20) {
+      result = units[n % 100] + " " + thousands[i] + " " + result;
+      n = Math.floor(n / 100);
+    } else {
+      result =
+        tens[Math.floor((n % 100) / 10)] +
+        " " +
+        units[n % 10] +
+        " " +
+        thousands[i] +
+        " " +
+        result;
+      n = Math.floor(n / 100);
     }
-  
-    if (number > 0) {
-      if (words !== "") words += " and ";
-      if (number < 20) words += numbersToWords[number];
-      else {
-        words += numbersToWords[Math.floor(number / 10) * 10];
-        if (number % 10 > 0) {
-          words += "-" + numbersToWords[number % 10];
-        }
-      }
-    }
-    return words;
+    i++;
   }
+
+  // Clean up extra spaces and trim the result
+  result = result.trim().replace(/\s{2,}/g, ' ').trim();
+
+  return result + " Only";
+};
+
+// import { jsPDF } from "jspdf";
