@@ -1,8 +1,8 @@
 /* General Page Styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 0;
+    margin: 35px;
+    padding: 10px;
     background-color: #f7f7f7;
   }
 
@@ -102,7 +102,7 @@ body {
   }
   
   /* Add Entry Button */
-  .add-row-button {
+  .add-row-button, .download-pdf-button {
     background-color: #690808;
     color: white;
     border: none;
@@ -113,7 +113,7 @@ body {
     transition: background-color 0.3s ease;
   }
   
-  .add-row-button:hover {
+  .add-row-button:hover, .download-pdf-button:hover {
     background-color: #9a4343;
   }
 

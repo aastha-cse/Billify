@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import phoneIcon from "../assets/phone.png";
 import { convertToWords } from './toWords';
 import "./Style.css";
@@ -88,6 +90,52 @@ const Create = () => {
     return null;
   };
 
+  const downloadPDF = async () => {
+    try {
+      const originalInvoice = document.querySelector(".invoice");
+  
+      if (!originalInvoice) {
+        console.error("Invoice element not found");
+        return;
+      }
+  
+      const invoiceClone = originalInvoice.cloneNode(true);
+  
+      const buttons = invoiceClone.querySelectorAll(".add-row-button, .add-row");
+      buttons.forEach((button) => button.remove());
+  
+      const inputs = invoiceClone.querySelectorAll("input");
+      inputs.forEach((input) => {
+        const value = input.value || "";
+        const span = document.createElement("span");
+        span.textContent = value;
+        input.replaceWith(span);
+      });
+  
+      invoiceClone.style.position = "absolute";
+      invoiceClone.style.top = "-10000px";
+      document.body.appendChild(invoiceClone);
+  
+      const canvas = await html2canvas(invoiceClone, {
+        useCORS: true,
+        scale: 2,
+      });
+  
+      document.body.removeChild(invoiceClone);
+  
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+  
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("invoice.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
+  
   return (
     <div className="invoice">
       <div className="header">
@@ -227,6 +275,9 @@ const Create = () => {
       <div className="add-row">
         <button className="add-row-button" onClick={addRow}>
           Add Entry
+        </button>
+        <button className="download-pdf-button" onClick={downloadPDF}>
+          Download PDF
         </button>
       </div>
     </div>

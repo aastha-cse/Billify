@@ -1,46 +1,23 @@
-// Function to convert a number to words (Indian system)
-export const convertToWords = (num) => {
-  const units = [
-    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-  ];
-
-  const tens = [
-    "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-  ];
-
-  const thousands = ["", "Thousand", "Lakh", "Crore"];
-
-  if (num === 0) return "Zero";
-
-  // Separate the integer and fractional part
-  const [integerPart] = num.toString().split(".");
-
-  let result = "";
-  let i = 0;
-
-  // Convert the integer part into words
-  let n = parseInt(integerPart);
-  while (n > 0) {
-    if (n % 100 < 20) {
-      result = units[n % 100] + " " + thousands[i] + " " + result;
-      n = Math.floor(n / 100);
-    } else {
-      result =
-        tens[Math.floor((n % 100) / 10)] +
-        " " +
-        units[n % 10] +
-        " " +
-        thousands[i] +
-        " " +
-        result;
-      n = Math.floor(n / 100);
-    }
-    i++;
+export function convertToWords(value) {
+  let ones = ['', 'one', 'two', 'three', 'four',
+          'five', 'six', 'seven', 'eight', 'nine',
+          'ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
+          'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];   
+  let tens = ['twenty','thirty', 'forty','fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  let digit = 0;   
+  if (value < 20) return ones[value];   
+  if (value < 100) {     
+      digit = value % 10;    
+      return tens[Math.floor(value/10)-2] + " " + (digit > 0 ? ones[digit] : "");   
   }
-
-  // Clean up extra spaces and trim the result
-  result = result.trim().replace(/\s{2,}/g, ' ').trim();
-
-  return result + " Only";
-};
+  if (value < 1000) {    
+       return ones[Math.floor(value/100)] + " hundred " + (value % 100 > 0 ? convertToWords(value % 100) : "");   
+  }   
+  if (value < 100000) {     
+      return convertToWords(Math.floor(value/1000)) + " thousand " + (value % 1000 > 0 ? convertToWords(value % 1000) : "");   
+  }   
+  if (value < 10000000) {     
+      return convertToWords(Math.floor(value/100000)) + " lakh " + (value % 100000 > 0 ? convertToWords(value % 100000) : "");   
+  }   
+  return convertToWords(Math.floor(value/10000000)) + " crore " + (value % 10000000 > 0 ? convertToWords(value % 10000000) : "");
+}
