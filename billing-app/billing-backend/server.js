@@ -24,6 +24,7 @@ mongoose.connect(mongoURL, {
 
 // Bill Schema
 const billSchema = new mongoose.Schema({
+  invoiceNumber: { type: String, required: true },
   date: { type: Date, default: Date.now },
   seller: { type: String, required: true },
   items: { type: Array, required: true },
@@ -52,12 +53,45 @@ app.get("/bills", async (req, res) => {
 // Route to save a bill
 app.post("/bills", async (req, res) => {
   try {
-    const billData = req.body;
+    const latestBill = await Bill.findOne().sort({ invoiceNumber: -1 });
+
+    let newInvoiceNumber = "0001";
+
+    if (latestBill) {
+      newInvoiceNumber = (parseInt(latestBill.invoiceNumber, 10) + 1).toString();
+    }
+
+    const formattedInvoiceNumber = newInvoiceNumber.padStart(4, "0");
+
+    const billData = {
+      ...req.body,
+      invoiceNumber: formattedInvoiceNumber,
+    };
+
     const bill = new Bill(billData);
     await bill.save();
-    res.status(201).json({ message: "Bill saved successfully!", savedBill: bill });
+
+    res.status(201).json({
+      message: "Bill saved successfully!",
+      savedBill: bill,
+    });
   } catch (error) {
+    console.error("Error saving bill:", error);
     res.status(500).json({ error: "Error saving bill" });
+  }
+});
+
+app.get("/bills/latest-invoice", async (req, res) => {
+  try {
+    const latestBill = await Bill.findOne().sort({ invoiceNumber: -1 });
+
+    const latestInvoiceNumber = latestBill
+      ? (parseInt(latestBill.invoiceNumber, 10) + 1).toString().padStart(4, "0")
+      : "0001";
+
+    res.json({ invoiceNumber: latestInvoiceNumber });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching the latest invoice number", error });
   }
 });
 

@@ -5,10 +5,11 @@ const router = express.Router();
 
 // Route to save a bill
 router.post("/", async (req, res) => {
-  const { date, seller, items, totalAmount, sum, netAmount } = req.body;
+  const { invoiceNumber,  date, seller, items, totalAmount, sum, netAmount } = req.body;
 
   try {
     const newBill = new Bill({
+      invoiceNumber,
       date,
       seller,
       items,

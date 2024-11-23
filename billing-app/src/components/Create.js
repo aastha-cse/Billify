@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import phoneIcon from "../assets/phone.png";
 import { convertToWords } from "./toWords";
 import { exportToPDF } from "./exportPDF";
@@ -12,6 +12,7 @@ const Create = () => {
     { itemName: "", itemNumber: "", rate: "", amount: 0 },
   ]);
   const [saveStatus, setSaveStatus] = useState({ message: "", success: false });
+  const [invoiceNumber, setInvoiceNumber] = useState("");
 
   const handleInputChange = (index, field, value) => {
     const updatedItems = [...items];
@@ -63,11 +64,26 @@ const Create = () => {
     exportToPDF(".invoice", "invoice.pdf");
   };
 
+  useEffect(() => {
+    const fetchLatestInvoiceNumber = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/bills/latest-invoice");
+        const data = await response.json();
+        setInvoiceNumber(data.invoiceNumber);
+      } catch (error) {
+        console.error("Error fetching the latest invoice number:", error);
+      }
+    };
+
+    fetchLatestInvoiceNumber();
+  }, []);
+
   const saveBill = () => {
     const totalAmount = items.reduce((acc, item) => acc + item.amount, 0);
     const netAmount = totalAmount - sum;
 
     const billData = {
+      invoiceNumber,
       date: new Date(),
       seller: document.querySelector("input[placeholder='Enter seller name']")
         .value,
@@ -80,6 +96,7 @@ const Create = () => {
     save(billData)
       .then((response) => {
         setSaveStatus({ message: "Bill saved successfully!", success: true });
+        setInvoiceNumber(response.savedBill.invoiceNumber);
       })
       .catch((error) => {
         setSaveStatus({ message: "Failed to save the bill.", success: false });
@@ -130,7 +147,7 @@ const Create = () => {
       </div>
 
       <div className="invoiceDetails">
-        <div className="invoiceNumber">Invoice Number: 123</div>
+        <div className="invoiceNumber">Invoice Number: {invoiceNumber}</div>
         <div className="invoiceDate">
           Invoice Date:{" "}
           {new Date().toLocaleDateString("en-GB", {
