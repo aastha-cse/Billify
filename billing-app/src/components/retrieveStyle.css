@@ -1,0 +1,127 @@
+/* General Page Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 35px;
+    padding: 10px;
+    background-color: #f7f7f7;
+  }
+  
+  .retrieve-bills {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #690808;
+    margin-bottom: 20px;
+  }
+
+  /* Filter Section */
+  .filter-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .filter-section select,
+  .filter-section input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .filter-section input::placeholder {
+    color: #7f8c8d;
+  }
+  
+  .filter-section select:focus,
+  .filter-section input:focus {
+    border-color: #690808;
+  }
+  
+  .filter-section button {
+    background-color: #690808;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .filter-section button:hover {
+    background-color: #9a4343;
+  }
+  .filter-section input::placeholder {
+  color: #7f8c8d;
+}
+  
+  /* Retrieve Bills Table */
+  .retrieve-bills table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .retrieve-bills th,
+  .retrieve-bills td {
+    border: 1px solid #bdc3c7;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    border: 1px solid #000000;
+  }
+  
+  .retrieve-bills th {
+    background-color: #f7f7f7;
+    color: #2c3e50;
+    font-weight: bold;
+  }
+  
+  .retrieve-bills td {
+    background-color: #ffffff;
+  }
+  
+  .retrieve-bills td button {
+    background-color: #690808;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .retrieve-bills td button:hover {
+    background-color: #9a4343;
+  }
+  
+  /* Empty State */
+  .retrieve-bills .empty-state {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .retrieve-bills table {
+      font-size: 12px;
+    }
+  
+    .retrieve-bills th, .retrieve-bills td {
+      padding: 8px;
+    }
+  }
+  

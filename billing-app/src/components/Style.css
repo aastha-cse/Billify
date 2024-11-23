@@ -123,7 +123,8 @@ body {
 }
 
 .add-row-button:hover,
-.download-pdf-button:hover {
+.download-pdf-button:hover,
+.save-bill-button:hover {
   background-color: #9a4343;
 }
 
