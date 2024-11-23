@@ -11,6 +11,7 @@ const Create = () => {
   const [items, setItems] = useState([
     { itemName: "", itemNumber: "", rate: "", amount: 0 },
   ]);
+  const [saveStatus, setSaveStatus] = useState({ message: "", success: false });
 
   const handleInputChange = (index, field, value) => {
     const updatedItems = [...items];
@@ -76,7 +77,13 @@ const Create = () => {
       netAmount,
     };
 
-    save(billData);
+    save(billData)
+      .then((response) => {
+        setSaveStatus({ message: "Bill saved successfully!", success: true });
+      })
+      .catch((error) => {
+        setSaveStatus({ message: "Failed to save the bill.", success: false });
+      });
   };
 
   const totalItems = items.reduce((acc, item) => acc + item.itemNumber, 0);
@@ -269,6 +276,14 @@ const Create = () => {
         <button className="save-bill-button" onClick={saveBill}>
           Save Bill
         </button>
+      </div>
+      <div
+        className="save-status"
+        style={{
+          color: saveStatus.success ? "green" : "red",
+        }}
+      >
+        {saveStatus.message && <p>{saveStatus.message}</p>}
       </div>
     </div>
   );
