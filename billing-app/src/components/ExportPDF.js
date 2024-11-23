@@ -1,7 +1,7 @@
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-export const exportToPDF = async () => {
+export const exportToPDF = async (invoiceNumber) => {
   try {
     const originalInvoice = document.querySelector(".invoice");
 
@@ -41,7 +41,9 @@ export const exportToPDF = async () => {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("invoice.pdf");
+
+    const filename = `invoice${invoiceNumber}.pdf`;
+    pdf.save(filename);
   } catch (error) {
     console.error("Error generating PDF:", error);
   }

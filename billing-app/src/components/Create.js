@@ -61,7 +61,7 @@ const Create = () => {
   };
 
   const downloadPDF = () => {
-    exportToPDF(".invoice", "invoice.pdf");
+    exportToPDF(invoiceNumber);
   };
 
   useEffect(() => {
