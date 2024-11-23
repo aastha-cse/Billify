@@ -110,7 +110,8 @@ body {
   gap: 10px;
 }
 .add-row-button,
-.download-pdf-button {
+.download-pdf-button,
+.save-bill-button {
   background-color: #690808;
   color: white;
   border: none;

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import phoneIcon from "../assets/phone.png";
 import { convertToWords } from "./toWords";
-import { exportToPDF } from "./ExportPDF";
+import { exportToPDF } from "./exportPDF";
+import { save } from "./saveBill";
 import "./Style.css";
 
 const Create = () => {
@@ -14,7 +15,7 @@ const Create = () => {
   const handleInputChange = (index, field, value) => {
     const updatedItems = [...items];
     updatedItems[index][field] =
-      field === "itemName"
+      field === "itemName" || field === "remark"
         ? value.toUpperCase()
         : value === ""
         ? ""
@@ -59,6 +60,23 @@ const Create = () => {
 
   const downloadPDF = () => {
     exportToPDF(".invoice", "invoice.pdf");
+  };
+
+  const saveBill = () => {
+    const totalAmount = items.reduce((acc, item) => acc + item.amount, 0);
+    const netAmount = totalAmount - sum;
+
+    const billData = {
+      date: new Date(),
+      seller: document.querySelector("input[placeholder='Enter seller name']")
+        .value,
+      items,
+      totalAmount,
+      sum,
+      netAmount,
+    };
+
+    save(billData);
   };
 
   const totalItems = items.reduce((acc, item) => acc + item.itemNumber, 0);
@@ -135,6 +153,7 @@ const Create = () => {
               <th>Item</th>
               <th>Number of Items</th>
               <th>Rate</th>
+              <th>Remark</th>
               <th>Amount</th>
               <th colSpan={2}>Expenses</th>
               <th>Net Amount</th>
@@ -181,21 +200,32 @@ const Create = () => {
                     onKeyDown={(e) => handleKeyDown(e, index, "rate")}
                   />
                 </td>
-                <td>{item.amount.toFixed(2)}</td>
+                <td>
+                  <input
+                    id={`remark-${index}`}
+                    type="text"
+                    value={item.remark}
+                    placeholder="Enter remark"
+                    onChange={(e) =>
+                      handleInputChange(index, "remark", e.target.value)
+                    }
+                    onKeyDown={(e) => handleKeyDown(e, index, "remark")}
+                  />
+                </td>
+                <td>{Math.round(item.amount)}</td>
                 {index === 0 && (
                   <>
                     <td>
                       <div>
-                        <p>Others</p>
                         <p>Labour</p>
                         <p>Freight</p>
                         <p>Postage</p>
+                        <p>Others</p>
                       </div>
                     </td>
                     <td>
                       <div className="values">
-                        <p>{(totalAmount * 0.0625).toFixed(2)}</p>
-                        <p>{(totalItems * 5).toFixed(2)}</p>
+                        <p>{Math.round(totalItems * 5)}</p>
                         <input
                           className="numip"
                           type="number"
@@ -205,9 +235,10 @@ const Create = () => {
                           onKeyDown={(e) => handleKeyDown(e, index, "expenses")}
                         />
                         <p>10</p>
+                        <p>{Math.round(totalAmount * 0.0625)}</p>
                       </div>
                     </td>
-                    <td>{(totalAmount - sum).toFixed(2)}</td>
+                    <td>{Math.round(totalAmount - sum)}</td>
                   </>
                 )}
               </tr>
@@ -216,10 +247,11 @@ const Create = () => {
               <td>Total</td>
               <td>{totalItems}</td>
               <td></td>
-              <td>{totalAmount.toFixed(2)}</td>
               <td></td>
-              <td>{sum.toFixed(2)}</td>
-              <td>{(totalAmount - sum).toFixed(2)}</td>
+              <td>{Math.round(totalAmount)}</td>
+              <td></td>
+              <td>{Math.round(sum)}</td>
+              <td>{Math.round(totalAmount - sum)}</td>
             </tr>
           </tbody>
         </table>
@@ -233,6 +265,9 @@ const Create = () => {
         </button>
         <button className="download-pdf-button" onClick={downloadPDF}>
           Download PDF
+        </button>
+        <button className="save-bill-button" onClick={saveBill}>
+          Save Bill
         </button>
       </div>
     </div>
