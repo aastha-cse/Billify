@@ -54,7 +54,7 @@ const Create = () => {
   const addRow = () => {
     const newItems = [
       ...items,
-      { itemName: "", itemNumber: "", rate: "", amount: 0 },
+      { itemName: "", itemNumber: "", rate: "", amount: 0},
     ];
     setItems(newItems);
     recalculateSum(newItems, expenses);
@@ -147,9 +147,9 @@ const Create = () => {
       </div>
 
       <div className="invoiceDetails">
-        <div className="invoiceNumber">Invoice Number: {invoiceNumber}</div>
+        <div className="invoiceNumber">Invoice: {invoiceNumber}</div>
         <div className="invoiceDate">
-          Invoice Date:{" "}
+          Date:{" "}
           {new Date().toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
@@ -174,8 +174,8 @@ const Create = () => {
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Number of Items</th>
+              <th>Description</th>
+              <th>No. of Items</th>
               <th>Rate</th>
               <th>Remark</th>
               <th>Amount</th>
@@ -240,7 +240,7 @@ const Create = () => {
                 {index === 0 && (
                   <>
                     <td>
-                      <div>
+                      <div className="keys">
                         <p>Labour</p>
                         <p>Freight</p>
                         <p>Postage</p>
@@ -253,7 +253,7 @@ const Create = () => {
                         <input
                           className="numip"
                           type="number"
-                          value={expenses || ""}
+                          value={expenses === 0 ? "" : expenses}
                           placeholder="Enter freight"
                           onChange={(e) => handleExpensesChange(e.target.value)}
                           onKeyDown={(e) => handleKeyDown(e, index, "expenses")}

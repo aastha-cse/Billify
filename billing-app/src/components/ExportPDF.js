@@ -14,6 +14,8 @@ export const exportToPDF = async (invoiceNumber) => {
 
     const buttons = invoiceClone.querySelectorAll(".buttons");
     buttons.forEach((button) => button.remove());
+    const downloadText = invoiceClone.querySelectorAll(".save-status");
+    downloadText.forEach((downloadText) => downloadText.remove());
 
     const inputs = invoiceClone.querySelectorAll("input");
     inputs.forEach((input) => {
@@ -29,7 +31,7 @@ export const exportToPDF = async (invoiceNumber) => {
 
     const canvas = await html2canvas(invoiceClone, {
       useCORS: true,
-      scale: 2,
+      scale: 5,
     });
 
     document.body.removeChild(invoiceClone);

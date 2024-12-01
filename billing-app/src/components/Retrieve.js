@@ -78,10 +78,10 @@ const Retrieve = () => {
         <thead>
           <tr>
             <th>Invoice Number</th>
-            <th>Invoice Date</th>
+            <th>Date</th>
             <th>Seller</th>
-            <th>Total Amount</th>
             <th>Net Amount</th>
+            <th>View Bill</th>
           </tr>
         </thead>
         <tbody>
@@ -94,8 +94,8 @@ const Retrieve = () => {
                 year: "numeric",
               })}</td>
               <td>{bill.seller}</td>
-              <td>{Math.round(bill.totalAmount)}</td>
               <td>{Math.round(bill.netAmount)}</td>
+              <td><button>View</button></td>
             </tr>
           ))}
         </tbody>
