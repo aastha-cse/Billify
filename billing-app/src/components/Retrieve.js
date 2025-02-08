@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate instead of useHistory
 import './retrieveStyle.css';
 
 const Retrieve = () => {
   const [bills, setBills] = useState([]);
   const [filteredBills, setFilteredBills] = useState([]);
   const [filterCriteria, setFilterCriteria] = useState({ type: '', value: '' });
+  const navigate = useNavigate(); // Initialize navigate hook
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -46,6 +48,10 @@ const Retrieve = () => {
     }
 
     setFilteredBills(filtered);
+  };
+
+  const viewBill = (bill) => {
+    navigate('/create', { state: { bill: bill } }); // Use navigate to redirect
   };
 
   return (
@@ -95,7 +101,7 @@ const Retrieve = () => {
               })}</td>
               <td>{bill.seller}</td>
               <td>{Math.round(bill.netAmount)}</td>
-              <td><button>View</button></td>
+              <td><button onClick={() => viewBill(bill)}>View</button></td>
             </tr>
           ))}
         </tbody>

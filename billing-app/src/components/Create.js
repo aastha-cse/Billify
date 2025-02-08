@@ -3,6 +3,8 @@ import phoneIcon from "../assets/phone.png";
 import { convertToWords } from "./toWords";
 import { exportToPDF } from "./exportPDF";
 import { save } from "./saveBill";
+import { update } from "./updateBill";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Style.css";
 
 const Create = () => {
@@ -13,6 +15,30 @@ const Create = () => {
   ]);
   const [saveStatus, setSaveStatus] = useState({ message: "", success: false });
   const [invoiceNumber, setInvoiceNumber] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [bill, setBill] = useState(location.state ? location.state.bill : {});
+
+  useEffect(() => {
+    if (location.state && location.state.bill) {
+      setBill(location.state.bill);
+      setInvoiceNumber(location.state.bill.invoiceNumber);
+      setItems(location.state.bill.items || []);
+      setExpenses(location.state.bill.expenses || 0);
+    } else {
+      fetchLatestInvoiceNumber();
+    }
+  }, [location.state]);
+
+  const fetchLatestInvoiceNumber = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/bills/latest-invoice");
+      const data = await response.json();
+      setInvoiceNumber(data.invoiceNumber);
+    } catch (error) {
+      console.error("Error fetching the latest invoice number:", error);
+    }
+  };
 
   const handleInputChange = (index, field, value) => {
     const updatedItems = [...items];
@@ -54,7 +80,7 @@ const Create = () => {
   const addRow = () => {
     const newItems = [
       ...items,
-      { itemName: "", itemNumber: "", rate: "", amount: 0},
+      { itemName: "", itemNumber: "", rate: "", amount: 0 },
     ];
     setItems(newItems);
     recalculateSum(newItems, expenses);
@@ -63,20 +89,6 @@ const Create = () => {
   const downloadPDF = () => {
     exportToPDF(invoiceNumber);
   };
-
-  useEffect(() => {
-    const fetchLatestInvoiceNumber = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/bills/latest-invoice");
-        const data = await response.json();
-        setInvoiceNumber(data.invoiceNumber);
-      } catch (error) {
-        console.error("Error fetching the latest invoice number:", error);
-      }
-    };
-
-    fetchLatestInvoiceNumber();
-  }, []);
 
   const saveBill = () => {
     const totalAmount = items.reduce((acc, item) => acc + item.amount, 0);
@@ -93,10 +105,14 @@ const Create = () => {
       netAmount,
     };
 
-    save(billData)
+    const saveAction = bill._id ? update : save; // If bill has an ID, update, otherwise create new bill
+    saveAction(billData)
       .then((response) => {
         setSaveStatus({ message: "Bill saved successfully!", success: true });
         setInvoiceNumber(response.savedBill.invoiceNumber);
+        if (response.savedBill._id) {
+          setBill(response.savedBill); // Update the bill state if it's an existing bill
+        }
       })
       .catch((error) => {
         setSaveStatus({ message: "Failed to save the bill.", success: false });
@@ -105,7 +121,6 @@ const Create = () => {
 
   const totalItems = items.reduce((acc, item) => acc + item.itemNumber, 0);
   const totalAmount = items.reduce((acc, item) => acc + item.amount, 0);
-
   const netAmount = totalAmount - sum;
   const netAmountInWords = convertToWords(netAmount);
 
@@ -147,7 +162,7 @@ const Create = () => {
       </div>
 
       <div className="invoiceDetails">
-        <div className="invoiceNumber">Invoice: {invoiceNumber}</div>
+        <div className="invoiceNumber">Invoice Number: {invoiceNumber}</div>
         <div className="invoiceDate">
           Date:{" "}
           {new Date().toLocaleDateString("en-GB", {
@@ -166,6 +181,7 @@ const Create = () => {
               e.target.value = e.target.value.toUpperCase();
             }}
             placeholder="Enter seller name"
+            defaultValue={bill.seller || ""}
           />
         </div>
       </div>
@@ -281,7 +297,7 @@ const Create = () => {
         </table>
       </div>
 
-      <div className="summary">Total Net Amount: {netAmountInWords}</div>
+      <div className="summary">Net Sale: {netAmountInWords}</div>
 
       <div className="buttons">
         <button className="add-row-button" onClick={addRow}>

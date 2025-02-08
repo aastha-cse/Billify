@@ -30,6 +30,7 @@ const billSchema = new mongoose.Schema({
   items: { type: Array, required: true },
   totalAmount: { type: Number, required: true },
   netAmount: { type: Number, required: true },
+  expenses: { type: Number, required: true },
   sum: { type: Number, required: true },
 });
 
